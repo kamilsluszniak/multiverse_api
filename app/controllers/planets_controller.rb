@@ -5,10 +5,7 @@ class PlanetsController < ApplicationController
   respond_to :json
 
   def index
-    require 'pry'
-    binding.pry
-    @planets = current_user.planets.all
-    respond_with(@planets)
+    render json: current_user.planets.all
   end
 
   def resources
