@@ -7,7 +7,7 @@ class PlanetsController < ApplicationController
   def index
     render json: current_user.planets.all
   end
-
+=begin || This action is not needed in API - need to query object lvls and cooldowns during React APP initialisation
   def resources
     @planet = Planet.where('id = ?', params[:id]).select([:id, :user_id, :metal_lvl, :crystal_lvl, :hydrogen_lvl, :solar_lvl]).first
 
@@ -23,7 +23,7 @@ class PlanetsController < ApplicationController
       render :json => { :error => @error }
     end
   end
-
+=end
   def show_object
     @object = PlanetObject.new
     @object.name = params[:name]
@@ -34,7 +34,7 @@ class PlanetsController < ApplicationController
         ready_at = meta_time(@object.name)
         @object.time = (ready_at > Time.now) ? (ready_at - Time.now).to_i : nil
         @object.lvl = meta_lvl(@object.name).to_s
-        respond_with(@object)
+        render json: @object
       else
         @error = t('planet.actions.resources.not_your_planet')
         render :json => { :error => @error }
@@ -63,7 +63,7 @@ class PlanetsController < ApplicationController
             @object.lvl = meta_lvl(@object.name).to_s
 
             if @planet.save!
-              respond_with(@planet)
+              render json: @planet
             end
           else
             @error = t('common.no-resources')
