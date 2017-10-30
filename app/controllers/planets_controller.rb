@@ -5,11 +5,13 @@ class PlanetsController < ApplicationController
   respond_to :json
 
   def index
-    render json: current_user.planets.all
+    planets = current_user.planets.all
+    planets.each { |p| p.update_resources }
+    render json: planets
   end
-=begin || This action is not needed in API - need to query object lvls and cooldowns during React APP initialisation
-  def resources
-    @planet = Planet.where('id = ?', params[:id]).select([:id, :user_id, :metal_lvl, :crystal_lvl, :hydrogen_lvl, :solar_lvl]).first
+
+  def planet_info
+    @planet = Planet.where('id = ?', params[:id]).first
 
     if @planet != nil
       if @planet.user_id == current_user.id
@@ -23,7 +25,7 @@ class PlanetsController < ApplicationController
       render :json => { :error => @error }
     end
   end
-=end
+
   def show_object
     @object = PlanetObject.new
     @object.name = params[:name]
@@ -48,7 +50,9 @@ class PlanetsController < ApplicationController
   def build_object
     @object = PlanetObject.new
     @object.name = params[:name]
-    @planet = Planet.where('id = ?', params[:id]).select([:id, :user_id, :name, :resources_updated_at, :metal, :crystal, :hydrogen, :energy, query_rdy(@object.name), :metal_lvl, :crystal_lvl, :hydrogen_lvl, :solar_lvl]).first
+    @planet = Planet.where('id = ?', params[:id]).select([:id, :user_id, :name, :resources_updated_at, :metal, :crystal, :hydrogen, :energy,
+      query_rdy(@object.name), :metal_lvl, :crystal_lvl, :hydrogen_lvl, :solar_lvl]).first
+
     if @planet.present?
       if (@planet.user_id == current_user.id)
         @object.time = meta_time(@object.name).to_s
