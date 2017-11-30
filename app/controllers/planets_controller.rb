@@ -12,7 +12,7 @@ class PlanetsController < ApplicationController
 
   def planet_info
     @planet = Planet.where('id = ?', params[:id]).first
-
+    @planet.update_resources
     if @planet != nil
       if @planet.user_id == current_user.id
         render json: @planet
@@ -85,6 +85,9 @@ class PlanetsController < ApplicationController
       @error = t('planet.actions.resources.no_planet')
       render :json => { :error => @error }
     end
+  end
+
+  def buildings
   end
 
   def research

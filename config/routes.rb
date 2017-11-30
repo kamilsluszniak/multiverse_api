@@ -4,10 +4,11 @@ Rails.application.routes.draw do
 
   resources :planets do
     member do
-      get :resources, to: 'planets#resources'
+      get :planet_info, to: 'planets#planet_info'
       get :object, to: 'planets#show_object'
       post :object, to: 'planets#build_object'
+      get :planets, to: 'planets#index'
     end
   end
-  
+
 end
